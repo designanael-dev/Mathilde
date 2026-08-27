@@ -81,7 +81,7 @@ export default function MathildeApp() {
     {
       role: "assistant",
       content:
-        "Oi. Eu sou a Mathilde.\n\nTô aqui. Não precisa dizer nada agora, se não quiser.",
+        "Oii! Eu sou a Mathilde.\n\nQue bom que você chegou. Estou aqui para conversar, ouvir e fazer companhia. Não sou terapeuta, mas posso ser uma amiga para conversar. Pode chegar do seu jeito.",
     },
   ]);
   const [input, setInput] = useState("");
