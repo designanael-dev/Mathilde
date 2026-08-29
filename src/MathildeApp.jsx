@@ -85,24 +85,23 @@ export default function MathildeApp() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: nextMessages.map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-          system: SYSTEM_PROMPT,
-        }),
-      });
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: nextMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+    }),
+  });
 
       if (!response.ok) {
         throw new Error("Falha na API");
       }
 
       const data = await response.json();
-      const reply = (data.content || []).join("\n").trim();
+      const reply = (data.reply || "").trim();
 
       setMessages((prev) => [
         ...prev,
