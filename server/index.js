@@ -1,7 +1,11 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import { SYSTEM_PROMPT } from "./systemPrompt.js";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,15 +13,23 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const MODEL = process.env.OPENROUTER_MODEL || "openrouter/free";
+
+const APP_URL =
+  process.env.APP_URL || "https://mathilde-7md2.onrender.com";
+
 app.use(cors());
 app.use(express.json({ limit: "100kb" }));
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const { messages, system } = req.body;
+    const { messages } = req.body;
 
-    if (!Array.isArray(messages) || !system) {
-      return res.status(400).json({ error: "Dados inválidos." });
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({
+        error: "Dados inválidos.",
+      });
     }
 
     const response = await fetch(
@@ -25,17 +37,17 @@ app.post("/api/chat", async (req, res) => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://mathilde-7md2.onrender.com",
+          "HTTP-Referer": APP_URL,
           "X-Title": "Mathilde",
         },
         body: JSON.stringify({
-          model: "openrouter/free",
+          model: MODEL,
           messages: [
             {
               role: "system",
-              content: system,
+              content: SYSTEM_PROMPT,
             },
             ...messages.map((m) => ({
               role: m.role,
@@ -58,11 +70,10 @@ app.post("/api/chat", async (req, res) => {
 
     const data = await response.json();
 
-    const content = data.choices?.[0]?.message?.content || "";
+    const reply =
+      data.choices?.[0]?.message?.content?.trim() || "";
 
-    res.json({
-      content: [content],
-    });
+    res.json({ reply });
   } catch (error) {
     console.error("OpenRouter error:", error);
 
