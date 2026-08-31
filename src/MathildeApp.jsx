@@ -1,5 +1,5 @@
+```javascript
 import { useState, useRef, useEffect } from "react";
-import { SYSTEM_PROMPT } from "./systemPrompt.js";
 
 const TOKENS = {
   bg: "#211D26",
@@ -110,7 +110,6 @@ export default function MathildeApp() {
             role: m.role,
             content: m.content,
           })),
-          system: SYSTEM_PROMPT,
         }),
       });
 
@@ -208,3 +207,4 @@ export default function MathildeApp() {
     </div>
   );
 }
+```
