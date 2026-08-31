@@ -1,4 +1,3 @@
-```javascript
 import { useState, useRef, useEffect } from "react";
 
 const TOKENS = {
@@ -46,12 +45,10 @@ function CrisisCard() {
       <p className="crisis-title">
         Se agora dói demais, você não precisa passar por isso sozinho.
       </p>
-
       <p className="crisis-text">
-        CVV — Centro de Valorização da Vida: ligue{" "}
-        <strong>188</strong> (24h, gratuito) ou converse pelo chat em{" "}
-        <strong>cvv.org.br</strong>. Em risco imediato, ligue{" "}
-        <strong>192</strong> (SAMU).
+        CVV — Centro de Valorização da Vida: ligue <strong>188</strong> (24h,
+        gratuito) ou converse pelo chat em <strong>cvv.org.br</strong>. Em
+        risco imediato, ligue <strong>192</strong> (SAMU).
       </p>
     </div>
   );
@@ -65,11 +62,9 @@ export default function MathildeApp() {
         "Oii! Eu sou a Mathilde.\n\nQue bom que você chegou. Estou aqui para conversar, ouvir e fazer companhia. Não sou terapeuta, mas posso ser uma amiga para conversar. Pode chegar do seu jeito.",
     },
   ]);
-
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
-
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -80,53 +75,37 @@ export default function MathildeApp() {
 
   async function sendMessage() {
     const text = input.trim();
-
     if (!text || loading) return;
 
-    if (detectCrisis(text)) {
-      setShowCrisis(true);
-    }
+    if (detectCrisis(text)) setShowCrisis(true);
 
-    const nextMessages = [
-      ...messages,
-      {
-        role: "user",
-        content: text,
-      },
-    ];
-
+    const nextMessages = [...messages, { role: "user", content: text }];
     setMessages(nextMessages);
     setInput("");
     setLoading(true);
 
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: nextMessages.map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-        }),
-      });
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: nextMessages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+    }),
+  });
 
       if (!response.ok) {
         throw new Error("Falha na API");
       }
 
       const data = await response.json();
-
       const reply = (data.reply || "").trim();
 
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: reply || "...",
-        },
+        { role: "assistant", content: reply || "..." },
       ]);
     } catch (e) {
       setMessages((prev) => [
@@ -155,7 +134,6 @@ export default function MathildeApp() {
 
         <div className="header">
           <h1>Mathilde</h1>
-
           <p>
             não substitui terapia ou atendimento de emergência — só te
             acompanha até você encontrar.
@@ -170,11 +148,15 @@ export default function MathildeApp() {
                 m.role === "user" ? "user-row" : "assistant-row"
               }`}
             >
-              <div className={`message ${m.role}`}>{m.content}</div>
+              <div className={`message ${m.role}`}>
+                {m.content}
+              </div>
             </div>
           ))}
 
-          {loading && <div className="loading">respirando...</div>}
+          {loading && (
+            <div className="loading">respirando...</div>
+          )}
 
           {showCrisis && <CrisisCard />}
         </div>
@@ -189,7 +171,6 @@ export default function MathildeApp() {
               rows={1}
               aria-label="Mensagem"
             />
-
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
@@ -198,7 +179,6 @@ export default function MathildeApp() {
               →
             </button>
           </div>
-
           <p className="footer-note">
             Mathilde é uma companhia digital, não um profissional de saúde.
           </p>
@@ -207,4 +187,3 @@ export default function MathildeApp() {
     </div>
   );
 }
-```
