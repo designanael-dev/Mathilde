@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,400&family=Inter:wght@400;500;600&display=swap");
 
 :root {
@@ -28,6 +29,8 @@ button,
 textarea {
   font: inherit;
 }
+
+/* ===== Interface do chat ===== */
 
 .app {
   min-height: 100vh;
@@ -69,6 +72,7 @@ textarea {
     transform: scale(1);
     opacity: 0.85;
   }
+
   50% {
     transform: scale(1.18);
     opacity: 1;
@@ -236,5 +240,148 @@ textarea {
   .composer-area {
     padding-left: 16px;
     padding-right: 16px;
+  }
+}
+
+/* ===== Tela de boas-vindas ===== */
+
+.welcome {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #211D26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 24px 48px;
+  overflow: hidden;
+}
+
+.welcome-content {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: welcome-in 1.2s ease-out both;
+}
+
+.orb-wrap.large {
+  padding: 0 0 36px;
+}
+
+.breathing-orb.large {
+  width: 170px;
+  height: 170px;
+  box-shadow: 0 0 60px 14px #B77E8D55,
+    0 0 120px 30px #B77E8D22;
+}
+
+.welcome-title {
+  font-family: Fraunces, serif;
+  font-weight: 400;
+  font-size: 52px;
+  line-height: 1.1;
+  color: #EFE7E6;
+  margin: 0 0 22px;
+}
+
+.welcome-text {
+  font-size: 17px;
+  line-height: 1.65;
+  color: #A0919A;
+  margin: 0 0 34px;
+  max-width: 320px;
+}
+
+.start-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: none;
+  cursor: pointer;
+  background: #D9A6B2;
+  color: #211D26;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 16px 34px;
+  border-radius: 999px;
+  box-shadow: 0 0 28px 2px #B77E8D44;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.start-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 34px 4px #B77E8D66;
+}
+
+.start-button:focus-visible,
+.globe-button:focus-visible {
+  outline: 2px solid #D9A6B2;
+  outline-offset: 3px;
+}
+
+.welcome-note {
+  color: #A0919A;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 26px 0 0;
+  max-width: 280px;
+  opacity: 0.85;
+}
+
+.globe-button {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #D9A6B2;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.globe-button:hover {
+  background: #2B2531;
+}
+
+@keyframes welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .welcome {
+    padding-top: 64px;
+  }
+
+  .breathing-orb.large {
+    width: 150px;
+    height: 150px;
+  }
+
+  .welcome-title {
+    font-size: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-content {
+    animation: none;
   }
 }
