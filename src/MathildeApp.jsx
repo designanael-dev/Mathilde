@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 
 const TOKENS = {
@@ -31,10 +32,14 @@ function detectCrisis(text) {
   return CRISIS_PATTERNS.some((re) => re.test(text));
 }
 
-function BreathingOrb({ active }) {
+function BreathingOrb({ active, large = false }) {
   return (
-    <div className="orb-wrap">
-      <div className={`breathing-orb ${active ? "active" : ""}`} />
+    <div className={`orb-wrap ${large ? "large" : ""}`}>
+      <div
+        className={`breathing-orb ${active ? "active" : ""} ${
+          large ? "large" : ""
+        }`}
+      />
     </div>
   );
 }
@@ -54,7 +59,31 @@ function CrisisCard() {
   );
 }
 
+function GlobeIcon() {
+  return (
+    <svg
+      width="23"
+      height="23"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3a15 15 0 0 1 0 18" />
+      <path d="M12 3a15 15 0 0 0 0 18" />
+    </svg>
+  );
+}
+
 export default function MathildeApp() {
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [showLanguages, setShowLanguages] = useState(false);
+
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -62,9 +91,11 @@ export default function MathildeApp() {
         "Oii! Eu sou a Mathilde.\n\nQue bom que você chegou. Estou aqui para conversar, ouvir e fazer companhia. Não sou terapeuta, mas posso ser uma amiga para conversar. Pode chegar do seu jeito.",
     },
   ]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
+
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -75,26 +106,35 @@ export default function MathildeApp() {
 
   async function sendMessage() {
     const text = input.trim();
+
     if (!text || loading) return;
 
-    if (detectCrisis(text)) setShowCrisis(true);
+    if (detectCrisis(text)) {
+      setShowCrisis(true);
+    }
 
-    const nextMessages = [...messages, { role: "user", content: text }];
+    const nextMessages = [
+      ...messages,
+      { role: "user", content: text },
+    ];
+
     setMessages(nextMessages);
     setInput("");
     setLoading(true);
 
     try {
-  const response = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      messages: nextMessages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-    }),
-  });
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: nextMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Falha na API");
@@ -125,6 +165,86 @@ export default function MathildeApp() {
       e.preventDefault();
       sendMessage();
     }
+  }
+
+  if (showWelcome) {
+    return (
+      <div className="welcome">
+        <button
+          className="globe-button"
+          onClick={() => setShowLanguages(!showLanguages)}
+          aria-label="Opções de idioma"
+          aria-expanded={showLanguages}
+          title="Idiomas"
+        >
+          <GlobeIcon />
+        </button>
+
+        {showLanguages && (
+          <div
+            role="status"
+            style={{
+              position: "absolute",
+              top: "76px",
+              right: "22px",
+              width: "220px",
+              padding: "16px",
+              borderRadius: "14px",
+              background: TOKENS.surface,
+              border: `1px solid ${TOKENS.surfaceRaised}`,
+              color: TOKENS.sand,
+              zIndex: 2,
+              boxShadow: "0 8px 28px #00000033",
+            }}
+          >
+            <p
+              style={{
+                margin: "0 0 8px",
+                fontSize: "14px",
+                fontWeight: 600,
+              }}
+            >
+              Idiomas
+            </p>
+            <p
+              style={{
+                margin: 0,
+                color: TOKENS.mauve,
+                fontSize: "12px",
+                lineHeight: 1.6,
+              }}
+            >
+              Novos idiomas estarão disponíveis em breve. A Mathilde está
+              se preparando para conversar com mais pessoas pelo mundo.
+            </p>
+          </div>
+        )}
+
+        <div className="welcome-content">
+          <BreathingOrb large />
+
+          <h1 className="welcome-title">Mathilde</h1>
+
+          <p className="welcome-text">
+            Um espaço para conversar, respirar e ser você.
+            No seu tempo, do seu jeito.
+          </p>
+
+          <button
+            className="start-button"
+            onClick={() => setShowWelcome(false)}
+          >
+            Começar a conversar
+            <span aria-hidden="true">→</span>
+          </button>
+
+          <p className="welcome-note">
+            Não sou terapeuta. Sou uma companhia digital, feita para
+            ouvir e conversar com você.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -171,6 +291,7 @@ export default function MathildeApp() {
               rows={1}
               aria-label="Mensagem"
             />
+
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
@@ -179,6 +300,7 @@ export default function MathildeApp() {
               →
             </button>
           </div>
+
           <p className="footer-note">
             Mathilde é uma companhia digital, não um profissional de saúde.
           </p>
