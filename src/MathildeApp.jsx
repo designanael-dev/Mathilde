@@ -84,20 +84,13 @@ export default function MathildeApp() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showLanguages, setShowLanguages] = useState(false);
 
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "Oii! Eu sou a Mathilde.\n\nQue bom que você chegou. Estou aqui para conversar, ouvir e fazer companhia. Não sou terapeuta, mas posso ser uma amiga para conversar. Pode chegar do seu jeito.",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
 
   const scrollRef = useRef(null);
-
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
